@@ -1,0 +1,18 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    tools:context="com.tarun.saini.baking_app.ui.StepsActivity">
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/step_list_recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_more">
+    </android.support.v7.widget.RecyclerView>
+
+
+
+</LinearLayout>
