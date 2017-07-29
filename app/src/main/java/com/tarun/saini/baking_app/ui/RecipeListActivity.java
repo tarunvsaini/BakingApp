@@ -24,6 +24,7 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeAdapt
 
 
     private static final String SAVE_STATE = "myFragment";
+    public static final String RECIPE_IMAGE = "recipe_image";
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
     private boolean mTwoPane;
@@ -90,6 +91,7 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeAdapt
             bundle.putString(RECIPE_NAME, recipe.get(position).getName());
             bundle.putInt(RECIPE_SERVES, recipe.get(position).getServings());
             bundle.putInt(RECIPE_ID, recipe.get(position).getId());
+            bundle.putString(RECIPE_IMAGE,recipe.get(position).getImage());
             detailFragment.setArguments(bundle);
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.recipe_detail_container, detailFragment);

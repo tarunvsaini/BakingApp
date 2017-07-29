@@ -63,11 +63,19 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         holder.recipeName2.setText(current.getName());
         holder.recipeName.setText(current.getName());
         holder.serving.setText("Servings: "+String.valueOf(current.getServings()));
-        for(int i=0;i<getItemCount();i++) {
-            if (position == i) {
-                Glide.with(mContext).load(img_resources[i]).into(holder.recipe_background);
+
+        if(!current.getImage().isEmpty())
+        {
+            Glide.with(mContext).load(current.getImage()).into(holder.recipe_background);
+        }else
+            {
+                for(int i=0;i<getItemCount();i++) {
+                    if (position == i) {
+                        Glide.with(mContext).load(img_resources[i]).into(holder.recipe_background);
+                    }
+                }
             }
-        }
+
 
 
 

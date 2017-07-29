@@ -24,12 +24,16 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.RecipeListActivity" />
         </activity>
-        <activity android:name=".ui.StepsActivity">
+        <activity android:name=".ui.StepsActivity"
+            android:configChanges="orientation|screenSize">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.RecipeListActivity" />
         </activity>
-        <activity android:name=".ui.StepDetailActivity"></activity>
+        <activity android:name=".ui.StepDetailActivity"
+            android:configChanges="orientation|screenSize">
+
+        </activity>
 
         <provider
             android:name=".data.IngredientProvider"

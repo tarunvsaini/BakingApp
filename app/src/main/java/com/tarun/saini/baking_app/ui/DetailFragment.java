@@ -52,6 +52,7 @@ import static com.tarun.saini.baking_app.data.IngredientContract.IngredientEntry
 import static com.tarun.saini.baking_app.ui.RecipeListActivity.PANES;
 import static com.tarun.saini.baking_app.ui.RecipeListActivity.POSITION;
 import static com.tarun.saini.baking_app.ui.RecipeListActivity.RECIPE_ID;
+import static com.tarun.saini.baking_app.ui.RecipeListActivity.RECIPE_IMAGE;
 import static com.tarun.saini.baking_app.ui.RecipeListActivity.RECIPE_INGREDIENTS;
 import static com.tarun.saini.baking_app.ui.RecipeListActivity.RECIPE_NAME;
 import static com.tarun.saini.baking_app.ui.RecipeListActivity.RECIPE_SERVES;
@@ -111,7 +112,7 @@ public class DetailFragment extends Fragment {
     boolean isShow;
     ArrayList<Step> steps;
     ArrayList<Ingredient> ingredients;
-    String name;
+    String name,recipeImage;
     int servings;
     int id;
     int[] img_resources = {R.drawable.nutella, R.drawable.brownie, R.drawable.yelloc, R.drawable.cheesecake};
@@ -180,7 +181,7 @@ public class DetailFragment extends Fragment {
                     deleteIngredient();
                     Snackbar snackbar = Snackbar
                             .make(coordinatorLayout, "Removed From Home Screen Widget", Snackbar.LENGTH_LONG);
-                    // favBox.setButtonDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_favorite_border_red_500_18dp));
+
 
                     snackbar.show();
 
@@ -295,6 +296,7 @@ public class DetailFragment extends Fragment {
         ingredients = mRecipe.getIngredients();
         steps = mRecipe.getSteps();
         id = mRecipe.getId();
+        recipeImage=mRecipe.getImage();
 
 
     }
@@ -308,6 +310,7 @@ public class DetailFragment extends Fragment {
         servings = getArguments().getInt(RECIPE_SERVES);
         id = getArguments().getInt(RECIPE_ID);
         toolbar.setVisibility(View.GONE);
+        recipeImage=getArguments().getString(RECIPE_IMAGE);
 
     }
 
@@ -326,19 +329,30 @@ public class DetailFragment extends Fragment {
         StepAdapter mStepAdapter = new StepAdapter(steps);
         stepRecyclerView.setAdapter(mStepAdapter);
 
+        if (!recipeImage.isEmpty())
+        {
+            Glide.with(getActivity()).load(recipeImage).into(mBackdrop);
 
-        if (id == 1) {
-            Glide.with(getActivity()).load(img_resources[0]).into(mBackdrop);
-        } else if (id == 2) {
-
-            Glide.with(getActivity()).load(img_resources[1]).into(mBackdrop);
-        } else if (id == 3) {
-
-            Glide.with(getActivity()).load(img_resources[2]).into(mBackdrop);
-        } else if (id == 4) {
-
-            Glide.with(getActivity()).load(img_resources[3]).into(mBackdrop);
         }
+        else
+            {
+                if (id == 1) {
+                    Glide.with(getActivity()).load(img_resources[0]).into(mBackdrop);
+                } else if (id == 2) {
+
+                    Glide.with(getActivity()).load(img_resources[1]).into(mBackdrop);
+                } else if (id == 3) {
+
+                    Glide.with(getActivity()).load(img_resources[2]).into(mBackdrop);
+                } else if (id == 4) {
+
+                    Glide.with(getActivity()).load(img_resources[3]).into(mBackdrop);
+                }
+
+            }
+
+
+
 
     }
 
