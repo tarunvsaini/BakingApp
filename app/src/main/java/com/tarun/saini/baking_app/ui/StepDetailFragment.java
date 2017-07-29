@@ -13,9 +13,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlaybackException;
@@ -52,6 +55,7 @@ import static com.tarun.saini.baking_app.adapter.StepListAdapter.STEPLIST;
 import static com.tarun.saini.baking_app.ui.StepsActivity.STEP_DESCRIPTION;
 import static com.tarun.saini.baking_app.ui.StepsActivity.STEP_PANES;
 import static com.tarun.saini.baking_app.ui.StepsActivity.STEP_POSITION;
+import static com.tarun.saini.baking_app.ui.StepsActivity.STEP_THUMBNAIL;
 import static com.tarun.saini.baking_app.ui.StepsActivity.STEP_VIDEO;
 
 public class StepDetailFragment extends Fragment implements ExoPlayer.EventListener, View.OnClickListener {
@@ -61,6 +65,9 @@ public class StepDetailFragment extends Fragment implements ExoPlayer.EventListe
     private static final String SAVE_POSITION = "stepPosition";
     private static final String SAVE_LIST = "stepList";
     private static final String SAVE_INDEX = "index";
+    private static final String SAVE_RESUME_POSITION = "save_resume_position";
+    private static final String SAVE_WINDOW = "save_resume_window";
+
     private Step mStep;
     @BindView(R.id.recipe_description)
     TextView description;
@@ -74,15 +81,19 @@ public class StepDetailFragment extends Fragment implements ExoPlayer.EventListe
     ImageButton next;
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
+    @BindView(R.id.thumbnail_image)
+    ImageView thumbnailImage;
     private TrackSelector trackSelector;
-    private int currentWindow;
-    private long playbackPosition;
     private SimpleExoPlayer player;
     private SimpleExoPlayerView playerView;
     private String videoUrl;
+    private String thumbnailUrl;
     private ArrayList<Step> arrayList;
     private int mIndex;
     private int position;
+    private int resumeWindow;
+    private long resumePosition;
+    private boolean shouldAutoPlay;
 
 
     private static final DefaultBandwidthMeter BANDWIDTH_METER = new DefaultBandwidthMeter();
@@ -101,8 +112,10 @@ public class StepDetailFragment extends Fragment implements ExoPlayer.EventListe
         View rootView = inflater.inflate(R.layout.fragment_step_detail, container, false);
 
         ButterKnife.bind(this, rootView);
-
         setRetainInstance(true);
+        shouldAutoPlay = true;
+        // clearResumePosition();
+
 
         description.setTypeface(Typeface.createFromAsset(getActivity().getAssets(), "lato_regular.ttf"));
         playerView = (SimpleExoPlayerView) rootView.findViewById(R.id.video);
@@ -130,6 +143,9 @@ public class StepDetailFragment extends Fragment implements ExoPlayer.EventListe
             position = savedInstanceState.getInt(SAVE_POSITION);
             arrayList = savedInstanceState.getParcelableArrayList(SAVE_LIST);
             mIndex = savedInstanceState.getInt(SAVE_INDEX);
+            resumePosition = savedInstanceState.getLong(SAVE_RESUME_POSITION);
+            resumeWindow = savedInstanceState.getInt(SAVE_WINDOW);
+
 
             if (mTwoPaneLayout) {
                 previous.setVisibility(View.GONE);
@@ -138,9 +154,12 @@ public class StepDetailFragment extends Fragment implements ExoPlayer.EventListe
                 nextText.setVisibility(View.GONE);
                 mToolbar.setVisibility(View.GONE);
                 showDataTab();
+                player.seekTo(resumePosition);
             } else {
                 description.setText(arrayList.get(position).getDescription());
                 showDataPhone(position);
+                playerView.setPlayer(player);
+                player.seekTo(resumePosition);
             }
 
         }
@@ -169,6 +188,7 @@ public class StepDetailFragment extends Fragment implements ExoPlayer.EventListe
         recipeDetail = getArguments().getString(STEP_DESCRIPTION);
         videoUrl = getArguments().getString(STEP_VIDEO);
         position = getArguments().getInt(STEP_POSITION);
+        thumbnailUrl = getArguments().getString(STEP_THUMBNAIL);
         showDataTab();
 
 
@@ -176,11 +196,20 @@ public class StepDetailFragment extends Fragment implements ExoPlayer.EventListe
 
     private void showDataTab() {
         description.setText(recipeDetail);
-        if (!videoUrl.isEmpty()) {
+        if (!videoUrl.isEmpty() && thumbnailUrl.isEmpty()) {
             initializePlayer(Uri.parse(videoUrl));
+            thumbnailImage.setVisibility(View.GONE);
 
+        } else if (!thumbnailUrl.isEmpty() && thumbnailUrl.endsWith(".mp4")) {
+            playerView.setVisibility(View.VISIBLE);
+            playerView.requestFocus();
+            initializePlayer(Uri.parse(thumbnailUrl));
+        } else if (!thumbnailUrl.isEmpty() && !thumbnailUrl.endsWith(".mp4")) {
+            playerView.setVisibility(View.GONE);
+            Glide.with(getActivity()).load(thumbnailUrl).into(thumbnailImage);
         } else {
             playerView.setVisibility(View.GONE);
+            thumbnailImage.setVisibility(View.GONE);
         }
     }
 
@@ -195,12 +224,22 @@ public class StepDetailFragment extends Fragment implements ExoPlayer.EventListe
         videoUrl = arrayList.get(index).getVideoURL();
         description.setText(recipeDetail);
         mIndex = arrayList.get(position).getId();
+        thumbnailUrl = arrayList.get(position).getThumbnailURL();
 
-        if (!videoUrl.isEmpty()) {
+        if (!videoUrl.isEmpty() && thumbnailUrl.isEmpty()) {
             initializePlayer(Uri.parse(videoUrl));
+            thumbnailImage.setVisibility(View.GONE);
 
+        } else if (!thumbnailUrl.isEmpty() && thumbnailUrl.endsWith(".mp4")) {
+            playerView.setVisibility(View.VISIBLE);
+            playerView.requestFocus();
+            initializePlayer(Uri.parse(thumbnailUrl));
+        } else if (!thumbnailUrl.isEmpty() && !thumbnailUrl.endsWith(".mp4")) {
+            playerView.setVisibility(View.GONE);
+            Glide.with(getActivity()).load(thumbnailUrl).into(thumbnailImage);
         } else {
             playerView.setVisibility(View.GONE);
+            thumbnailImage.setVisibility(View.GONE);
         }
 
         if (position < arrayList.size() - 1)
@@ -214,7 +253,6 @@ public class StepDetailFragment extends Fragment implements ExoPlayer.EventListe
 
 
         if (position == 0) {
-            // Toast.makeText(getActivity(), "First Step", Toast.LENGTH_LONG).show();
             previous.setVisibility(View.GONE);
             previousText.setVisibility(View.INVISIBLE);
             next.setVisibility(View.VISIBLE);
@@ -242,7 +280,6 @@ public class StepDetailFragment extends Fragment implements ExoPlayer.EventListe
 
             playerView.setPlayer(player);
             player.setPlayWhenReady(true);
-            player.seekTo(currentWindow, playbackPosition);
 
 
             String userAgent = Util.getUserAgent(getActivity(), "Baking App");
@@ -256,6 +293,11 @@ public class StepDetailFragment extends Fragment implements ExoPlayer.EventListe
 
 
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 
     @Override
@@ -280,6 +322,8 @@ public class StepDetailFragment extends Fragment implements ExoPlayer.EventListe
 
         if (player != null) {
             player.stop();
+            shouldAutoPlay = player.getPlayWhenReady();
+            updateResumePosition();
             player.release();
             player = null;
         }
@@ -336,8 +380,6 @@ public class StepDetailFragment extends Fragment implements ExoPlayer.EventListe
                     nextText.setVisibility(View.VISIBLE);
                     int i = ++mIndex;
                     position += 1;
-
-                    //Toast.makeText(getContext(), position+"", Toast.LENGTH_SHORT).show();
                     releasePlayer();
                     showDataPhone(i);
 
@@ -384,9 +426,18 @@ public class StepDetailFragment extends Fragment implements ExoPlayer.EventListe
         outState.putInt(SAVE_POSITION, position);
         outState.putParcelableArrayList(SAVE_LIST, arrayList);
         outState.putInt(SAVE_INDEX, mIndex);
+        outState.putInt(SAVE_WINDOW, resumeWindow);
+        outState.putLong(SAVE_RESUME_POSITION, resumePosition);
 
 
     }
+
+    private void updateResumePosition() {
+        resumeWindow = player.getCurrentWindowIndex();
+        resumePosition = player.getCurrentPosition();
+    }
+
+
 }
 
 

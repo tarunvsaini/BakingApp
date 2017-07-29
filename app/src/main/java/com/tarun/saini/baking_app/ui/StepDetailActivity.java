@@ -19,7 +19,7 @@ import static com.tarun.saini.baking_app.adapter.StepListAdapter.STEP;
 import static com.tarun.saini.baking_app.adapter.StepListAdapter.STEPLIST;
 import static com.tarun.saini.baking_app.ui.StepsActivity.STEP_PANES;
 
-public class StepDetailActivity extends AppCompatActivity  {
+public class StepDetailActivity extends AppCompatActivity {
 
     private static final String SAVE_STATE = "stepDetailFragment";
     StepDetailFragment stepDetailFragment;
@@ -30,26 +30,22 @@ public class StepDetailActivity extends AppCompatActivity  {
         setContentView(R.layout.activity_step_detail);
         Step step = getIntent().getParcelableExtra(STEP);
         ArrayList<Step> mSteps = getIntent().getParcelableArrayListExtra(STEPLIST);
-        boolean mTwoPane=getIntent().getBooleanExtra(STEP_PANES,false);
+        boolean mTwoPane = getIntent().getBooleanExtra(STEP_PANES, false);
         Bundle bundle = getIntent().getExtras();
 
-        if (savedInstanceState==null)
-        {
-            stepDetailFragment=new StepDetailFragment();
-            bundle.putBoolean(STEP_PANES,mTwoPane);
+        if (savedInstanceState == null) {
+            stepDetailFragment = new StepDetailFragment();
+            bundle.putBoolean(STEP_PANES, mTwoPane);
             stepDetailFragment.setArguments(bundle);
             getSupportFragmentManager().beginTransaction()
-            .replace(R.id.steps_detail_container, stepDetailFragment)
-            .commit();
+                    .replace(R.id.steps_detail_container, stepDetailFragment)
+                    .commit();
+        } else {
+            if (stepDetailFragment != null && stepDetailFragment.isAdded())
+                stepDetailFragment = (StepDetailFragment) getSupportFragmentManager()
+                        .getFragment(savedInstanceState, SAVE_STATE);
+
         }
-
-        else
-            {
-                if (stepDetailFragment!=null && stepDetailFragment.isAdded())
-                stepDetailFragment= (StepDetailFragment) getSupportFragmentManager()
-                        .getFragment(savedInstanceState,SAVE_STATE);
-
-            }
 
 
     }
@@ -58,9 +54,8 @@ public class StepDetailActivity extends AppCompatActivity  {
     public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
         super.onSaveInstanceState(outState, outPersistentState);
 
-        if (stepDetailFragment!=null && stepDetailFragment.isAdded())
-        {
-            getSupportFragmentManager().putFragment(outState,SAVE_STATE,stepDetailFragment);
+        if (stepDetailFragment != null && stepDetailFragment.isAdded()) {
+            getSupportFragmentManager().putFragment(outState, SAVE_STATE, stepDetailFragment);
 
         }
 

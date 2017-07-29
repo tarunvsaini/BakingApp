@@ -24,10 +24,9 @@ import static com.tarun.saini.baking_app.ui.DetailActivity.STEPS;
 
 public class StepFragment extends Fragment {
 
-    @BindView(R.id.step_list_recyclerView) RecyclerView stepListRecyclerView;
+    @BindView(R.id.step_list_recyclerView)
+    RecyclerView stepListRecyclerView;
     private OnStepClickListener mCallBack;
-
-
 
 
     @Override
@@ -42,26 +41,25 @@ public class StepFragment extends Fragment {
         }
     }
 
-    public StepFragment()
-    {}
+    public StepFragment() {
+    }
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View rootView=inflater.inflate(R.layout.fragment_step, container, false);
-        ButterKnife.bind(this,rootView);
+        View rootView = inflater.inflate(R.layout.fragment_step, container, false);
+        ButterKnife.bind(this, rootView);
 
         stepListRecyclerView.setNestedScrollingEnabled(false);
         stepListRecyclerView.setHasFixedSize(true);
         stepListRecyclerView.setRecycledViewPool(new RecyclerView.RecycledViewPool());
         stepListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         ArrayList<Step> arrayList;
-        arrayList=getActivity().getIntent().getParcelableArrayListExtra(STEPS);
-        StepListAdapter step=new StepListAdapter(arrayList,mCallBack);
+        arrayList = getActivity().getIntent().getParcelableArrayListExtra(STEPS);
+        StepListAdapter step = new StepListAdapter(arrayList, mCallBack);
         stepListRecyclerView.setAdapter(step);
-        // Inflate the layout for this fragment
         return rootView;
     }
 

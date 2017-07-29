@@ -20,16 +20,17 @@
             android:layout_height="wrap_content"
             android:background="@color/colorPrimaryDark"
             android:fitsSystemWindows="true"
+            android:maxLines="1"
             app:contentScrim="@color/colorPrimary"
             app:expandedTitleTextAppearance="@android:color/transparent"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            android:maxLines="1">
+            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
 
             <LinearLayout
+                android:id="@+id/backdrop_linerLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/backdrop_linerLayout"
                 android:fitsSystemWindows="true"
+                android:focusableInTouchMode="true"
                 android:orientation="vertical"
                 app:layout_collapseMode="parallax">
 
@@ -38,25 +39,24 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/height_recipe_image"
                     android:background="@drawable/pholder"
-                    android:scaleType="centerCrop"
-                    android:contentDescription="@string/recipe_image" />
+                    android:contentDescription="@string/recipe_image"
+                    android:scaleType="centerCrop" />
 
                 <RelativeLayout
 
-                    android:layout_width="match_parent"
                     android:id="@+id/recipeName_linerLayout"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@android:color/background_light"
-                    >
+                    android:background="@android:color/background_light">
 
                     <TextView
                         android:id="@+id/recipeName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/margin_normal"
+                        android:gravity="top"
                         android:text="@string/Recipe_Name"
                         android:textAllCaps="true"
-                        android:gravity="top"
                         android:textAppearance="@style/TextAppearance.StatusBar.EventContent.Title"
                         android:textColor="@android:color/background_dark"
                         android:textSize="@dimen/text_size_large" />
@@ -65,8 +65,8 @@
                         android:id="@+id/serves"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="bottom"
                         android:layout_below="@+id/recipeName"
+                        android:layout_gravity="bottom"
                         android:layout_marginLeft="@dimen/margin_normal"
                         android:layout_marginStart="@dimen/margin_normal"
                         android:text="@string/serving"
@@ -74,27 +74,25 @@
 
 
                     <CheckBox
-                        android:button="@drawable/add_ingredient_to_widget"
+                        android:id="@+id/addWidgetBox"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/addWidgetBox"
-                        android:layout_gravity="end|bottom"
-                        android:checked="false"
                         android:layout_above="@+id/viewDivider"
+                        android:layout_alignEnd="@+id/recipeName"
                         android:layout_alignRight="@+id/recipeName"
-                        android:layout_alignEnd="@+id/recipeName" />
+                        android:layout_gravity="end|bottom"
+                        android:button="@drawable/add_ingredient_to_widget"
+                        android:checked="false" />
 
                     <View
+                        android:id="@+id/viewDivider"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/view_thickness"
-                        android:layout_marginTop="@dimen/margin_less"
-                        android:id="@+id/viewDivider"
                         android:layout_below="@+id/serves"
+                        android:layout_marginTop="@dimen/margin_less"
                         android:background="@android:color/darker_gray">
 
                     </View>
-
-
                 </RelativeLayout>
 
             </LinearLayout>
@@ -103,25 +101,25 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                app:layout_collapseMode="pin"/>
+                app:layout_collapseMode="pin" />
 
         </android.support.design.widget.CollapsingToolbarLayout>
 
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v4.widget.NestedScrollView
+        android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
         android:scrollbars="none"
-        android:id="@+id/nestedScrollView"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
+            android:id="@+id/nestedLinearLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:id="@+id/nestedLinearLayout">
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/ingredient_title"
@@ -143,11 +141,11 @@
             </android.support.v7.widget.RecyclerView>
 
             <View
+                android:id="@+id/divider"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/view_thickness"
                 android:layout_marginTop="@dimen/margin_less"
-                android:background="@android:color/darker_gray"
-                android:id="@+id/divider">
+                android:background="@android:color/darker_gray">
 
             </View>
 
@@ -160,14 +158,13 @@
                 android:text="@string/directions"
                 android:textColor="@android:color/background_dark"
                 android:textSize="@dimen/text_normal"
-                android:textStyle="bold"
-                />
+                android:textStyle="bold" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/steps_recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="@dimen/margin_more"/>
+                android:layout_marginTop="@dimen/margin_more" />
 
             <Button
                 android:id="@+id/show_steps"

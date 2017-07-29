@@ -1,29 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
+    android:id="@+id/ingredient_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/ingredient_container"
-    >
+    android:orientation="horizontal">
 
     <CheckBox
-        android:button="@drawable/check"
+        android:id="@+id/checkboxIngredient"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:id="@+id/checkboxIngredient"
         android:layout_gravity="center_vertical"
+        android:layout_margin="16dp"
+        android:button="@drawable/check"
         android:checked="false"
 
         />
+
     <TextView
+        android:id="@+id/ingredient"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/ingredient"
         android:layout_gravity="center_vertical"
-        android:textAllCaps="false"
         android:text="@string/dummy"
-        />
+        android:textAllCaps="false" />
 
 
 </LinearLayout>

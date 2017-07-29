@@ -6,12 +6,11 @@
     tools:context="com.tarun.saini.baking_app.ui.RecipeListActivity">
 
     <android.support.v7.widget.RecyclerView
+        android:id="@+id/recipe_recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/recipe_recyclerView">
+        android:layout_height="wrap_content">
 
     </android.support.v7.widget.RecyclerView>
-
 
 
 </LinearLayout>

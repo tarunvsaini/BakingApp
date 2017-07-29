@@ -57,7 +57,7 @@ public class StepListAdapter extends RecyclerView.Adapter<StepListAdapter.StepLi
         holder.shortSteps.setText(count.getShortDescription());
         holder.step_number.setText(String.valueOf(count.getId()+1));
 
-        if (count.getVideoURL().isEmpty())
+        if (count.getVideoURL().isEmpty() && count.getThumbnailURL().isEmpty())
         {
             holder.video.setVisibility(View.GONE);
         }

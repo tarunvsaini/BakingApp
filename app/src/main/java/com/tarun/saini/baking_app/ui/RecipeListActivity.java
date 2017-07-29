@@ -24,7 +24,8 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeAdapt
 
 
     private static final String SAVE_STATE = "myFragment";
-    @BindView(R.id.toolbar) Toolbar mToolbar;
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
     private boolean mTwoPane;
     public static final String POSITION = "position";
     public static final String PANES = "panes";

@@ -1,69 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/grid_card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/nil_margin"
-    android:id="@+id/grid_card"
 
     >
-        <RelativeLayout
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/card_height">
+
+        <ImageView
+            android:id="@+id/backdrop"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/card_height">
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/backdrop"
-                android:scaleType="centerCrop"
-                android:background="@drawable/pholder"
-                android:src="@drawable/gradient_bg"
-                android:contentDescription="@string/recipe_image" />
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/gradient_bg"
-                android:layout_above="@+id/recipeName2"
-                android:contentDescription="@string/Null" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/recipeNameList"
-                android:layout_centerVertical="true"
-                android:layout_centerHorizontal="true"
-                android:text="@string/nutella_pie"
-                android:textSize="@dimen/recipe_name_tv_size"
-                android:textStyle="bold"
-                android:textColor="@android:color/background_light"
-                android:textAllCaps="true"/>
+            android:layout_height="match_parent"
+            android:background="@drawable/pholder"
+            android:contentDescription="@string/recipe_image"
+            android:scaleType="centerCrop"
+            android:src="@drawable/gradient_bg" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/recipeNameList"
-                android:text="@string/serving_2"
-                android:textSize="@dimen/serving_text_size"
-                android:id="@+id/serving"
-                android:layout_centerHorizontal="true"
-                android:textColor="@android:color/background_light"
-                />
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/recipeName2"
+            android:contentDescription="@string/Null"
+            android:src="@drawable/gradient_bg" />
+
+        <TextView
+            android:id="@+id/recipeNameList"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="@string/nutella_pie"
+            android:textAllCaps="true"
+            android:textColor="@android:color/background_light"
+            android:textSize="@dimen/recipe_name_tv_size"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/serving"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/recipeNameList"
+            android:layout_centerHorizontal="true"
+            android:text="@string/serving_2"
+            android:textColor="@android:color/background_light"
+            android:textSize="@dimen/serving_text_size" />
 
 
+        <TextView
+            android:id="@+id/recipeName2"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/recipe_name_layout_height"
+            android:layout_alignParentBottom="true"
+            android:layout_centerVertical="true"
+            android:background="@android:color/background_light"
+            android:padding="@dimen/recipe_name_padding"
+            android:text="@string/nutella_pie"
+            android:textAlignment="center"
+            android:textColor="@android:color/background_dark"
+            android:textSize="@dimen/recipe_name_size_normal" />
 
-            <TextView
-                android:id="@+id/recipeName2"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/recipe_name_layout_height"
-                android:padding="@dimen/recipe_name_padding"
-                android:background="@android:color/background_light"
-                android:layout_alignParentBottom="true"
-                android:text="@string/nutella_pie"
-                android:textColor="@android:color/background_dark"
-                android:textSize="@dimen/recipe_name_size_normal"
-                android:textAlignment="center"
-                android:layout_centerVertical="true"
-                />
-
-        </RelativeLayout>
+    </RelativeLayout>
 
 
-    </android.support.v7.widget.CardView>
+</android.support.v7.widget.CardView>
 

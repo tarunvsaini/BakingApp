@@ -6,11 +6,14 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -34,6 +37,7 @@ import com.tarun.saini.baking_app.adapter.StepAdapter;
 import com.tarun.saini.baking_app.widget.IngredientWidget;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -62,6 +66,10 @@ public class DetailFragment extends Fragment {
     private static final String SAVE_NAME = "saveRecipeName";
     private static final String SAVE_SERVES = "Saveserves";
     public static final String STEPS = "steps";
+    private static final String SAVE_STATE_LAYOUT_MANAGER_STEPS = "step_recyclerView_state";
+    private static final String SAVE_STATE_LAYOUT_MANAGER_INGREDIENTS = "ingredient_recyclerView_state";
+    private static final String ARTICLE_SCROLL_POSITION = "ARTICLE_SCROLL_POSITION";
+    private static final String SAVE_COLLAPSE_STATE = "collapsed";
 
 
     public Typeface lato_regular, lato_bold, lato_black = null;
@@ -90,17 +98,24 @@ public class DetailFragment extends Fragment {
     ImageView mBackdrop;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+    @BindView(R.id.nestedScrollView)
+    NestedScrollView mScrollView;
+    @BindView(R.id.appBar)
+    AppBarLayout appBar;
+    boolean collapsed;
+    int mScrollPositionStep, mScrollPositionIngredient;
 
 
     private Recipe mRecipe;
     Boolean mTwoPane;
+    boolean isShow;
     ArrayList<Step> steps;
     ArrayList<Ingredient> ingredients;
     String name;
     int servings;
     int id;
     int[] img_resources = {R.drawable.nutella, R.drawable.brownie, R.drawable.yelloc, R.drawable.cheesecake};
-
+    LinearLayoutManager stepLinerLayout, ingredientLinerLayout;
 
     public DetailFragment() {
 
@@ -127,8 +142,9 @@ public class DetailFragment extends Fragment {
                 .setHasFixedSize(true);
         ingredientRecyclerView
                 .setRecycledViewPool(new RecyclerView.RecycledViewPool());
+        ingredientLinerLayout = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         ingredientRecyclerView
-                .setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+                .setLayoutManager(ingredientLinerLayout);
 
 
         stepRecyclerView
@@ -137,8 +153,9 @@ public class DetailFragment extends Fragment {
                 .setHasFixedSize(true);
         stepRecyclerView
                 .setRecycledViewPool(new RecyclerView.RecycledViewPool());
+        stepLinerLayout = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         stepRecyclerView
-                .setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+                .setLayoutManager(stepLinerLayout);
 
 
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
@@ -155,7 +172,7 @@ public class DetailFragment extends Fragment {
                     addIngredient(ingredients);
                     Snackbar snackbar = Snackbar
                             .make(coordinatorLayout, "Added to Home Screen Widget", Snackbar.LENGTH_LONG);
-                    // favBox.setButtonDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_favorite_red_500_18dp));
+
 
                     snackbar.show();
 
@@ -191,12 +208,23 @@ public class DetailFragment extends Fragment {
                     }
 
                     if (scrollRange + verticalOffset == 0) {
+
                         collapsingToolbar.setTitle(mRecipe.getName());
                         isShow = true;
+                        collapsed = false;
                     } else if (isShow) {
                         collapsingToolbar.setTitle(" ");
                         isShow = false;
+                        collapsed = true;
                     }
+                } else {
+                    if (verticalOffset == 0) {
+
+                        collapsed = true;
+                    } else {
+                        collapsed = false;
+                    }
+
                 }
 
             }
@@ -209,18 +237,30 @@ public class DetailFragment extends Fragment {
 
         if (savedInstanceState != null) {
 
+            mScrollPositionStep = savedInstanceState.getInt(SAVE_STATE_LAYOUT_MANAGER_STEPS);
+            mScrollPositionIngredient = savedInstanceState.getInt(SAVE_STATE_LAYOUT_MANAGER_INGREDIENTS);
             name = savedInstanceState.getString(SAVE_NAME);
             servings = savedInstanceState.getInt(SAVE_SERVES);
             steps = savedInstanceState.getParcelableArrayList(SAVE_STEPS);
             ingredients = savedInstanceState.getParcelableArrayList(SAVE_INGREDIENT);
             getRecipeDetails();
+            collapsed = savedInstanceState.getBoolean(SAVE_COLLAPSE_STATE);
+            appBar.setExpanded(collapsed);
+
+            //Toast.makeText(getActivity(), collapsed+"", Toast.LENGTH_SHORT).show();
+
+            final int[] position = savedInstanceState.getIntArray(ARTICLE_SCROLL_POSITION);
+            if (position != null) {
+                mScrollView.post(new Runnable() {
+                    public void run() {
+                        mScrollView.scrollTo(position[1], position[1]);
+                    }
+                });
+            }
 
 
         } else {
             getRecipeDetails();
-            //Toast.makeText(getActivity(), "NULL", Toast.LENGTH_SHORT).show();
-
-
         }
 
 
@@ -310,7 +350,12 @@ public class DetailFragment extends Fragment {
         outState.putInt(SAVE_SERVES, servings);
         outState.putParcelableArrayList(SAVE_STEPS, steps);
         outState.putParcelableArrayList(SAVE_INGREDIENT, ingredients);
+        outState.putBoolean(SAVE_COLLAPSE_STATE, collapsed);
+        outState.putIntArray(ARTICLE_SCROLL_POSITION,
+                new int[]{mScrollView.getScrollX(), mScrollView.getScrollY()});
+
     }
+
 
     private void addIngredient(ArrayList<Ingredient> ingredients) {
         deleteIngredient();
@@ -348,5 +393,6 @@ public class DetailFragment extends Fragment {
         getActivity().getContentResolver().delete(INGREDIENT_CONTENT_URI, null, null);
         IngredientWidget.sendRefreshBroadcast(getActivity());
     }
+
 
 }

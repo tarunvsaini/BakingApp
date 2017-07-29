@@ -25,6 +25,7 @@ import static com.tarun.saini.baking_app.adapter.StepListAdapter.STEPLIST;
 public class StepsActivity extends AppCompatActivity implements StepListAdapter.OnStepClickListener {
 
 
+    public static final String STEP_THUMBNAIL = "thumbnail";
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
     private Boolean mTwoPaneLayout;
@@ -43,6 +44,7 @@ public class StepsActivity extends AppCompatActivity implements StepListAdapter.
         setSupportActionBar(mToolbar);
         mToolbar.setFitsSystemWindows(true);
         getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_home_white_24dp);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         SystemBarTintManager tintManager = new SystemBarTintManager(this);
         tintManager.setStatusBarTintEnabled(true);
@@ -62,8 +64,6 @@ public class StepsActivity extends AppCompatActivity implements StepListAdapter.
     @Override
     public void onStepSelected(int position, ArrayList<Step> steps) {
 
-//        Toast.makeText(this, mTwoPaneLayout+" Item Clicked", Toast.LENGTH_SHORT).show();
-
         Bundle bun = new Bundle();
         if (mTwoPaneLayout) {
             StepDetailFragment stepDetailFragment = new StepDetailFragment();
@@ -71,6 +71,7 @@ public class StepsActivity extends AppCompatActivity implements StepListAdapter.
             bun.putString(STEP_DESCRIPTION, steps.get(position).getDescription());
             bun.putBoolean(STEP_PANES, mTwoPaneLayout);
             bun.putInt(STEP_POSITION, position);
+            bun.putString(STEP_THUMBNAIL, steps.get(position).getThumbnailURL());
             stepDetailFragment.setArguments(bun);
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.steps_detail_container, stepDetailFragment);
@@ -81,7 +82,6 @@ public class StepsActivity extends AppCompatActivity implements StepListAdapter.
             bun.putInt(STEP_POSITION, position);
             bun.putBoolean(STEP_PANES, mTwoPaneLayout);
             stepDetails.putExtra(STEP, steps.get(position));
-            //stepDetails.putExtra(STEP_POSITION, position);
             stepDetails.putParcelableArrayListExtra(STEPLIST, steps);
             stepDetails.putExtras(bun);
             startActivity(stepDetails);

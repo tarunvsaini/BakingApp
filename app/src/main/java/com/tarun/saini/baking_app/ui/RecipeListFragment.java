@@ -30,18 +30,16 @@ import retrofit2.Response;
 
 public class RecipeListFragment extends Fragment {
 
-    private static final String SAVE_STATE ="save_state" ;
+    private static final String SAVE_STATE = "save_state";
     private ArrayList<Recipe> mRecipeList;
     private Recipe mRecipe;
     public static final String TAG = RecipeListActivity.class.getSimpleName();
-    @BindView(R.id.recipe_recyclerView) RecyclerView mRecyclerView;
+    @BindView(R.id.recipe_recyclerView)
+    RecyclerView mRecyclerView;
     private RestManager manager;
     private Typeface lato_regular = null;
     private OnRecipeClickListener mCallBack;
-    public int[] img_resources={R.drawable.nutella,R.drawable.brownie,R.drawable.yelloc,R.drawable.cheesecake};
-
-
-
+    public int[] img_resources = {R.drawable.nutella, R.drawable.brownie, R.drawable.yelloc, R.drawable.cheesecake};
 
 
     @Override
@@ -56,8 +54,7 @@ public class RecipeListFragment extends Fragment {
         }
     }
 
-    public RecipeListFragment()
-    {
+    public RecipeListFragment() {
 
     }
 
@@ -66,25 +63,21 @@ public class RecipeListFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_recipe_list, container, false);
-        ButterKnife.bind(this,rootView);
+        ButterKnife.bind(this, rootView);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setRecycledViewPool(new RecyclerView.RecycledViewPool());
         mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 1));
         lato_regular = Typeface.createFromAsset(getActivity().getAssets(), "lato_regular.ttf");
 
 
-
-
         if (savedInstanceState == null) {
 
             getRecipes();
 
-        }
-        else
-        {
+        } else {
             mRecipeList = savedInstanceState.getParcelableArrayList(SAVE_STATE);
-            if (mRecipeList != null)
-            {    mRecyclerView.setAdapter(new RecipeAdapter(mRecipeList, getContext(),mCallBack));
+            if (mRecipeList != null) {
+                mRecyclerView.setAdapter(new RecipeAdapter(mRecipeList, getContext(), mCallBack));
 
             }
 
@@ -96,8 +89,7 @@ public class RecipeListFragment extends Fragment {
     }
 
 
-    private void getRecipes()
-    {
+    private void getRecipes() {
 
         manager = new RestManager();
         Call<ArrayList<Recipe>> listCall = manager.getRecipeService().getAllRecipes();
@@ -106,7 +98,7 @@ public class RecipeListFragment extends Fragment {
             public void onResponse(Call<ArrayList<Recipe>> call, Response<ArrayList<Recipe>> response) {
 
                 mRecipeList = response.body();
-                mRecyclerView.setAdapter(new RecipeAdapter(mRecipeList, getContext(),mCallBack));
+                mRecyclerView.setAdapter(new RecipeAdapter(mRecipeList, getContext(), mCallBack));
 
 
             }
@@ -129,7 +121,7 @@ public class RecipeListFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelableArrayList(SAVE_STATE,mRecipeList);
+        outState.putParcelableArrayList(SAVE_STATE, mRecipeList);
     }
 }
 
