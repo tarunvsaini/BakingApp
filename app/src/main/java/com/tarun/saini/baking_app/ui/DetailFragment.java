@@ -192,10 +192,9 @@ public class DetailFragment extends Fragment {
 
 
         collapsingToolbar.setTitle(" ");
-        AppBarLayout appBarLayout = (AppBarLayout) rootView.findViewById(R.id.appBar);
-        appBarLayout.setExpanded(true);
+        appBar.setExpanded(true);
 
-        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+        appBar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             boolean isShow = false;
             int scrollRange = -1;
 
@@ -213,7 +212,7 @@ public class DetailFragment extends Fragment {
                         collapsingToolbar.setTitle(mRecipe.getName());
                         isShow = true;
                         collapsed = false;
-                    } else if (isShow) {
+                    } else if (verticalOffset == 0) {
                         collapsingToolbar.setTitle(" ");
                         isShow = false;
                         collapsed = true;

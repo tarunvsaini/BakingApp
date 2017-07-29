@@ -3,6 +3,7 @@ package com.tarun.saini.baking_app.ui;
 
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.media.MediaFormat;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -24,6 +25,7 @@ import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.Format;
 import com.google.android.exoplayer2.LoadControl;
 import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.SimpleExoPlayer;
@@ -38,9 +40,11 @@ import com.google.android.exoplayer2.trackselection.TrackSelection;
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
+import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
+import com.google.android.exoplayer2.upstream.HttpDataSource;
 import com.google.android.exoplayer2.util.Util;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.tarun.saini.baking_app.Model.Step;
@@ -275,19 +279,19 @@ public class StepDetailFragment extends Fragment implements ExoPlayer.EventListe
             LoadControl loadControl = new DefaultLoadControl();
             player = ExoPlayerFactory.newSimpleInstance(renderersFactory, trackSelector, loadControl);
 
-
             player.addListener(this);
 
             playerView.setPlayer(player);
-            player.setPlayWhenReady(true);
+            player.setPlayWhenReady(shouldAutoPlay);
 
 
             String userAgent = Util.getUserAgent(getActivity(), "Baking App");
-
             MediaSource mediaSource = new ExtractorMediaSource(mediaUri,
                     new DefaultDataSourceFactory(getActivity(), BANDWIDTH_METER,
                             new DefaultHttpDataSourceFactory(userAgent, BANDWIDTH_METER)),
                     new DefaultExtractorsFactory(), null, null);
+
+
 
             player.prepare(mediaSource);
 
@@ -296,8 +300,16 @@ public class StepDetailFragment extends Fragment implements ExoPlayer.EventListe
     }
 
     @Override
-    public void onResume() {
+    public void onStart() {
+        super.onStart();
+        initializePlayer(Uri.parse(videoUrl));
+    }
+
+    @Override
+    public void onResume()
+    {
         super.onResume();
+        initializePlayer(Uri.parse(videoUrl));
     }
 
     @Override
@@ -436,7 +448,6 @@ public class StepDetailFragment extends Fragment implements ExoPlayer.EventListe
         resumeWindow = player.getCurrentWindowIndex();
         resumePosition = player.getCurrentPosition();
     }
-
 
 }
 
